@@ -1,186 +1,190 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
-
-interface Book {
-  id: number;
-  author: string;
-  title: string;
-  year: number;
+interface Data{
+  id: number; 
+  author: string; 
+  title: string; 
+  year: number; 
   genre: string;
   pages: number;
   available: boolean;
 }
 
-const App: React.FC = () => {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sortBy, setSortBy] = useState<string>('title');
-  const [order, setOrder] = useState<string>('asc');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [newBook, setNewBook] = useState({
-    author: '',
-    title: '',
+function App() {
+  const [data, setData] = useState<Data[]>([]);
+
+  const [editingData, setEditingData] = useState<Data | null>(null);
+
+  const [formState, setFormState] = useState({
+    author: '', 
+    title: '', 
     year: '',
     genre: '',
     pages: '',
     available: true,
   });
 
-  const fetchBooks = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `http://localhost:3000/books?page=${currentPage}&sortBy=${sortBy}&order=${order}`
-      );
-      const data = await response.json();
-      setBooks(data);
-    } catch (error) {
-      console.error('Error fetching books:', error);
-    }
-    setLoading(false);
+  const fetchData = async () => {
+
+      const response = await fetch('http://localhost:5000/items');
+
+      const result = await response.json();
+
+      setData(result);
   };
 
   useEffect(() => {
-    fetchBooks();
-  }, [currentPage, sortBy, order]);
+    fetchData(); 
+  }, []); 
 
 
-  const handleAddBook = async () => {
-    const bookData = {
-      author: newBook.author,
-      title: newBook.title,
-      year: parseInt(newBook.year),
-      genre: newBook.genre,
-      pages: parseInt(newBook.pages),
-      available: newBook.available,
-    };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value} = e.target; 
+    setFormState({ ...formState, [name]: value }); 
+  };
 
-    try {
-      const response = await fetch('http://localhost:3000/books', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookData),
-      });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); 
+    if(editingData){
+      await updateData(); 
+    }else{
+      await postData(); 
+    }
+  }
 
-      if (response.ok) {
-        setNewBook({
-          author: '',
-          title: '',
-          year: '',
-          genre: '',
-          pages: '',
-          available: true,
-        });
-        fetchBooks(); 
-      }
-    } catch (error) {
-      console.error('Error adding book:', error);
+
+  const postData = async () => {
+    const response = await fetch('http://localhost:5000/items', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({
+        author: formState.author,
+        title: formState.title, 
+        year: parseInt(formState.year),
+        genre: formState.genre,
+        pages: parseInt(formState.pages),
+        available: formState.available
+      }),
+    });
+    if (response.ok) { 
+      fetchData(); 
+      resetForm(); 
     }
   };
 
 
-  const handleDeleteBook = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this book?')) {
-      try {
-        const response = await fetch(`http://localhost:3000/books/${id}`, {
-          method: 'DELETE',
-        });
+  const editData = (item: Data) => {
+    setEditingData(item); 
+    setFormState({
+      author: item.author,
+      title: item.title, 
+      year: item.year.toString(),
+      genre: item.genre,
+      pages: item.pages.toString(),
+      available: item.available,
+    });
+  };
 
-        if (response.ok) {
-          fetchBooks();
-        }
-      } catch (error) {
-        console.error('Error deleting book:', error);
-      }
+
+  const updateData = async () => {
+    if (!editingData) return; 
+    const response = await fetch(`http://localhost:5000/items/${editingData.id}`, { 
+      method: 'PUT', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        author: formState.author,
+        title: formState.title,
+        year: parseInt(formState.year),
+        genre: formState.genre,
+        pages: parseInt(formState.pages),
+        available: formState.available,
+      }),
+    });
+    if (response.ok) { 
+      fetchData(); 
+      resetForm(); 
     }
+  };
+
+  const deleteData = async (id: number) => {
+    const response = await fetch(`http://localhost:5000/items/${id}`, { 
+      method: 'DELETE', 
+    });
+    if (response.ok) { 
+      await fetchData(); 
+    }
+  };
+
+  const resetForm = () => {
+    setFormState({ author: '', title: '', year: '', genre: '', pages: '', available: true }); 
+    setEditingData(null); 
   };
 
   return (
-    <div>
-      <h1>Book Library</h1>
-
-      <div>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="title">Title</option>
-          <option value="author">Author</option>
-          <option value="year">Year</option>
-        </select>
-        <select value={order} onChange={(e) => setOrder(e.target.value)}>
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
-      </div>
-
-      <div className="book-list">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          books.map((book) => (
-            <div key={book.id} className="book-card">
-              <h2>{book.author} - {book.title}</h2>
-              <p>Year: {book.year}</p>
-              <p>Genre: {book.genre}</p>
-              <p>Pages: {book.pages}</p>
-              <p>Available: {book.available ? 'Yes' : 'No'}</p>
-              <button onClick={() => handleDeleteBook(book.id)}>Delete</button>
-            </div>
-          ))
-        )}
-      </div>
-
-      <div>
-        <h2>Add New Book</h2>
-        <input
-          type="text"
-          placeholder="Author"
-          value={newBook.author}
-          onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Title"
-          value={newBook.title}
-          onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Year"
-          value={newBook.year}
-          onChange={(e) => setNewBook({ ...newBook, year: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Genre"
-          value={newBook.genre}
-          onChange={(e) => setNewBook({ ...newBook, genre: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Pages"
-          value={newBook.pages}
-          onChange={(e) => setNewBook({ ...newBook, pages: e.target.value })}
-        />
-        <label>
-          Available:
+    <>
+      <h1>Bevásárlólista</h1>
+      {}
+      <form onSubmit={handleSubmit}>
+          <label htmlFor="product">Termék:</label>
+          <br />
           <input
-            type="checkbox"
-            checked={newBook.available}
-            onChange={(e) => setNewBook({ ...newBook, available: e.target.checked })}
+            type="text"
+            name="product" 
+            id="product"
+            value={formState.product} 
+            onChange={handleInputChange} 
           />
-        </label>
-        <button onClick={handleAddBook}>Add Book</button>
-      </div>
+          <br />
+          <label htmlFor="amount">Mennyiség:</label>
+          <br />
+          <input
+            type="number"
+            name="amount" 
+            id="amount"
+            value={formState.amount} 
+            onChange={handleInputChange} 
+          />
+          <br />
+          <label htmlFor="unit">Egység:</label>
+          <br />
+          <input
+            type="text"
+            name="unit" 
+            id="unit"
+            value={formState.unit} 
+            onChange={handleInputChange} 
+          />
+          <br /><br />
+          {}
+          <button type="submit">{editingData ? 'Módosítás' : 'Felvitel'}</button>
+      </form>
+      <br />
+      {}
+      <table>
+        {}
+        <tr>
+          <th>Termék</th>
+          <th>Mennyiség</th>
+          <th>Egység</th>
+          <th>Szerkesztés</th>
+          <th>Törlés</th>
+        </tr>
+        {}
+        {}
+        {data.map((item) => (
+          <tr key={item.id}>
+            <td>{item.product}</td>
+            <td>{item.amount}</td>
+            <td>{item.unit}</td>
+            {}
+            <td><button onClick={() => editData(item)}>Szerkesztés</button></td>
+            {}
+            <td><button onClick={() => deleteData(item.id)}>Törlés</button></td>
+          </tr>
+        ))}
+      </table>
+    </>
+  )
+}
 
-      <div>
-        <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
-        <button onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
-      </div>
-    </div>
-  );
-};
-
-export default App;
-
+export default App

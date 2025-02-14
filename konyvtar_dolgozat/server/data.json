@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "product": "alma",
+    "amount": 2,
+    "unit": "kg"
+  },
+  {
+    "id": 2,
+    "product": "kifli",
+    "amount": 3,
+    "unit": "db"
+  },
+  {
+    "id": 3,
+    "product": "körte",
+    "amount": 1,
+    "unit": "kg"
+  },
+  {
+    "id": 4,
+    "product": "kenyér",
+    "amount": 2,
+    "unit": "kg"
+  },
+  {
+    "id": 5,
+    "product": "tej",
+    "amount": 2,
+    "unit": "liter"
+  },
+  {
+    "id": 6,
+    "product": "margarin",
+    "amount": 1,
+    "unit": "doboz"
+  },
+  {
+    "id": 7,
+    "product": "cukor",
+    "amount": 1,
+    "unit": "kg"
+  },
+  {
+    "id": 8,
+    "product": "só",
+    "amount": 1,
+    "unit": "kg"
+  },
+  {
+    "id": 9,
+    "product": "hagyma",
+    "amount": 2,
+    "unit": "kg"
+  }
+]
