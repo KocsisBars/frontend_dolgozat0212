@@ -1,56 +1,47 @@
 [
   {
     "id": 1,
-    "product": "alma",
-    "amount": 2,
-    "unit": "kg"
+    "author": "JK Rowling",
+    "title": "Harry Potter and the Philosopher's Stone",
+    "year": 1997,
+    "genre": "Fantasy",
+    "pages": 223,
+    "available": true
   },
   {
     "id": 2,
-    "product": "kifli",
-    "amount": 3,
-    "unit": "db"
+    "author": "J.R.R. Tolkien",
+    "title": "The Hobbit",
+    "year": 1937,
+    "genre": "Fantasy",
+    "pages": 310,
+    "available": true
   },
   {
     "id": 3,
-    "product": "körte",
-    "amount": 1,
-    "unit": "kg"
+    "author": "George Orwell",
+    "title": "1984",
+    "year": 1949,
+    "genre": "Dystopian",
+    "pages": 328,
+    "available": false
   },
   {
     "id": 4,
-    "product": "kenyér",
-    "amount": 2,
-    "unit": "kg"
+    "author": "Harper Lee",
+    "title": "To Kill a Mockingbird",
+    "year": 1960,
+    "genre": "Fiction",
+    "pages": 281,
+    "available": true
   },
   {
     "id": 5,
-    "product": "tej",
-    "amount": 2,
-    "unit": "liter"
-  },
-  {
-    "id": 6,
-    "product": "margarin",
-    "amount": 1,
-    "unit": "doboz"
-  },
-  {
-    "id": 7,
-    "product": "cukor",
-    "amount": 1,
-    "unit": "kg"
-  },
-  {
-    "id": 8,
-    "product": "só",
-    "amount": 1,
-    "unit": "kg"
-  },
-  {
-    "id": 9,
-    "product": "hagyma",
-    "amount": 2,
-    "unit": "kg"
+    "author": "F. Scott Fitzgerald",
+    "title": "The Great Gatsby",
+    "year": 1925,
+    "genre": "Tragedy",
+    "pages": 180,
+    "available": false
   }
 ]

@@ -125,34 +125,64 @@ function App() {
       <h1>Bevásárlólista</h1>
       {}
       <form onSubmit={handleSubmit}>
-          <label htmlFor="product">Termék:</label>
+          <label htmlFor="author">Szerző:</label>
           <br />
           <input
             type="text"
-            name="product" 
-            id="product"
-            value={formState.product} 
+            name="author" 
+            id="author"
+            value={formState.author} 
             onChange={handleInputChange} 
           />
           <br />
-          <label htmlFor="amount">Mennyiség:</label>
+          <label htmlFor="title">Cím:</label>
+          <br />
+          <input
+            type="text"
+            name="title" 
+            id="title"
+            value={formState.title} 
+            onChange={handleInputChange} 
+          />
+          <br />
+          <label htmlFor="year">Év:</label>
           <br />
           <input
             type="number"
-            name="amount" 
-            id="amount"
-            value={formState.amount} 
+            name="year" 
+            id="year"
+            value={formState.year} 
             onChange={handleInputChange} 
           />
           <br />
-          <label htmlFor="unit">Egység:</label>
+          <label htmlFor="genre">Fajta:</label>
           <br />
           <input
             type="text"
-            name="unit" 
-            id="unit"
-            value={formState.unit} 
+            name="genre" 
+            id="genre"
+            value={formState.genre} 
             onChange={handleInputChange} 
+          />
+          <br />
+          <label htmlFor="pages">Oldalak:</label>
+          <br />
+          <input
+            type="number"
+            name="pages" 
+            id="pages"
+            value={formState.pages} 
+            onChange={handleInputChange} 
+          />
+          <br />
+          <label htmlFor="available">Elérhető:</label>
+          <br />
+          <input
+            type="checkbox"
+            name="available" 
+            id="available"
+            value={formState.available} 
+            onChange={(e) => setFormState({ ...formState, available: e.target.checked })}
           />
           <br /><br />
           {}
@@ -163,9 +193,12 @@ function App() {
       <table>
         {}
         <tr>
-          <th>Termék</th>
-          <th>Mennyiség</th>
-          <th>Egység</th>
+          <th>Szerző</th>
+          <th>Cím</th>
+          <th>Év</th>
+          <th>Fajta</th>
+          <th>Oldalak</th>
+          <th>Elérhető</th>
           <th>Szerkesztés</th>
           <th>Törlés</th>
         </tr>
@@ -173,9 +206,12 @@ function App() {
         {}
         {data.map((item) => (
           <tr key={item.id}>
-            <td>{item.product}</td>
-            <td>{item.amount}</td>
-            <td>{item.unit}</td>
+            <td>{item.author}</td>
+            <td>{item.title}</td>
+            <td>{item.year}</td>
+            <td>{item.genre}</td>
+            <td>{item.pages}</td>
+            <td>{item.available? "Yes": "No"}</td>
             {}
             <td><button onClick={() => editData(item)}>Szerkesztés</button></td>
             {}
